@@ -15,7 +15,11 @@ app.use((req, res, next) => {
 app.use("/", adsRouter);
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+    dbName: 'FindHandyman',
+    useNewUrlParser: true,
+  useUnifiedTopology: true
+  })
   .then(() => {
     //listen for requests
     app.listen(process.env.PORT, () => {
