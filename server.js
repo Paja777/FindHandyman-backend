@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 const express = require('express')
+const cors = require('cors');
 const adsRouter = require('./routes/ads')
 const mongoose = require('mongoose')
 
@@ -11,6 +12,11 @@ app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
+
+app.use(cors({
+    origin: 'http://localhost:3000' ,
+    credentials: true 
+}));
 
 app.use("/", adsRouter);
 

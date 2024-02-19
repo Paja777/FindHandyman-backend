@@ -18,6 +18,18 @@ const adSchema = new Schema({
     rating: {
         type: Number,
         required: true
+    },
+    services: {
+        type: [{String: String}],
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    note: {
+        type: String,
+        required: true
     }
 })
 
