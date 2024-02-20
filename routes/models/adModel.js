@@ -20,16 +20,16 @@ const adSchema = new Schema({
         required: true
     },
     services: {
-        type: [{String: String}],
+        type: [{ type: Object }],
         required: true
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     note: {
         type: String,
-        required: true
+        required: false
     }
 })
 

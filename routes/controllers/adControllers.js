@@ -24,10 +24,10 @@ const getAd = async (req, res) => {
 
 // create a new ad
 const createAd = async (req, res) => {
-  const { name, category, images, rating } = req.body;
+  const { name, category, images, rating, services, description, note } = req.body;
 
   try {
-    const ad = await Ad.create({ name, category, images, rating });
+    const ad = await Ad.create({ name, category, images, rating, services, description, note });
     res.status(200).json(ad);
   } catch (error) {
     res.status(400).json({ error: error.message });
