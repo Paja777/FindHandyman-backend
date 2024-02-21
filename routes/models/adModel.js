@@ -5,11 +5,11 @@ const Schema = mongoose.Schema
 const adSchema = new Schema({
     category: {
         type: String,
-        required: true
+        required: false
     },
     name: {
         type: String,
-        required: true
+        required: false
     },
     images: {
         type: [String],
@@ -17,11 +17,11 @@ const adSchema = new Schema({
     },
     rating: {
         type: Number,
-        required: true
+        required: false
     },
     services: {
         type: [{ type: Object }],
-        required: true
+        required: false
     },
     description: {
         type: String,
