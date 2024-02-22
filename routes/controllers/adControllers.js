@@ -58,7 +58,7 @@ const updateAd = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "No such ad" });
   }
-
+  
   const ad = await Ad.findOneAndUpdate(
     { _id: id },
     {
