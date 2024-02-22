@@ -5,7 +5,7 @@ const {
     createAd,
     deleteAd,
     updateAd
-} = require('./controllers/adControllers')
+} = require('../controllers/adControllers')
 
 const router = express.Router()
 

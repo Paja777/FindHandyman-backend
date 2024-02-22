@@ -3,7 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser'); // Import body-parser
-const adsRouter = require('./routes/ads');
+const adsRoutes = require('./routes/ads');
+const userRoutes = require('./routes/user');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -23,7 +24,8 @@ app.use(cors({
     credentials: true 
 }));
 
-app.use("/", adsRouter);
+app.use("/ad", adsRoutes);
+app.use("/user", userRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI, {
