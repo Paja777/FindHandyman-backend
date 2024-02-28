@@ -36,6 +36,7 @@ const createAd = async (req, res) => {
   try {
     // extracting user id from request headers
     const user_id = req.user._id;
+    console.log(user_id)
     const ad = await Ad.create({ name, category, images, rating, services, description, note, user_id });
     res.status(200).json(ad);
   } catch (error) {

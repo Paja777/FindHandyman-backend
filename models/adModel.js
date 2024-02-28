@@ -6,15 +6,15 @@ const adSchema = new Schema({
 
     category: {
         type: String,
-        required: true
+        required: false
     },
     name: {
         type: String,
-        required: true
+        required: false
     },
     images: {
         type: [String],
-        required: true
+        required: false
     },
     rating: {
         type: Number,
@@ -26,13 +26,13 @@ const adSchema = new Schema({
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     note: {
         type: String,
-        required: true
+        required: false
     },
-    userId: {
+    user_id: {
         type: String,
         required: true
     }
