@@ -4,7 +4,8 @@ const {
     getAd,
     createAd,
     deleteAd,
-    updateAd
+    updateAd,
+    getMyAds
 } = require('../controllers/adControllers')
 
 const requireAuth = require('../middleware/requireAuth')
@@ -13,6 +14,8 @@ const router = express.Router()
 
 // get all ads
 router.get('/', getAds)
+
+router.get('/my',getMyAds )
 
 // get single ad
 router.get('/:id', getAd)

@@ -7,6 +7,13 @@ const getAds = async (req, res) => {
   res.status(200).json(ads);
 };
 
+// get my ads
+const getMyAds = async (req, res) => {
+  const user_id = req.user._id;
+  const ads = await Ad.find({user_id}).sort({ createdAt: -1 });
+  res.status(200).json(ads);
+};
+
 // get single ad
 const getAd = async (req, res) => {
   const { id } = req.params;
@@ -27,7 +34,8 @@ const createAd = async (req, res) => {
   const { name, category, images, rating, services, description, note } = req.body;
 
   try {
-    const ad = await Ad.create({ name, category, images, rating, services, description, note });
+    const user_id = req.user._id;
+    const ad = await Ad.create({ name, category, images, rating, services, description, note, user_id });
     res.status(200).json(ad);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -79,4 +87,5 @@ module.exports = {
   getAd,
   deleteAd,
   updateAd,
+  getMyAds
 };

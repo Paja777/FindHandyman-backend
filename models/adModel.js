@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const adSchema = new Schema({
+
     category: {
         type: String,
         required: true
@@ -28,6 +29,10 @@ const adSchema = new Schema({
         required: true
     },
     note: {
+        type: String,
+        required: true
+    },
+    userId: {
         type: String,
         required: true
     }
