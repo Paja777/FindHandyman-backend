@@ -15,12 +15,17 @@ const router = express.Router()
 // get all ads
 router.get('/', getAds)
 
-router.get('/my',getMyAds )
 
 // get single ad
 router.get('/:id', getAd)
 
+
+//<-----Middleware for protecting routes---->//
 router.use(requireAuth)
+
+// get my ads
+router.get('/my/ads',getMyAds )
+
 // post ad
 router.post('/', createAd)
 
