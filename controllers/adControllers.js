@@ -3,14 +3,24 @@ const mongoose = require("mongoose");
 
 // get all ads
 const getAds = async (req, res) => {
-  const ads = await Ad.find({}).sort({ createdAt: -1 });
+  const { searchTerm } = req.query;
+  console.log(searchTerm);
+  if (!searchTerm) {
+    const ads = await Ad.find({}).sort({ cratedAt: -1 });
+    res.status(200).json(ads);
+    return;
+  }
+  const ads = await Ad.find({
+    category: { $regex: searchTerm, $options: "i" },
+  }).sort({ createdAt: -1 });
+  console.log(ads);
   res.status(200).json(ads);
 };
 
 // get my ads
 const getMyAds = async (req, res) => {
   const user_id = req.user._id;
-  const ads = await Ad.find({user_id}).sort({ createdAt: -1 });
+  const ads = await Ad.find({ user_id }).sort({ createdAt: -1 });
   res.status(200).json(ads);
 };
 
@@ -31,13 +41,31 @@ const getAd = async (req, res) => {
 
 // create a new ad
 const createAd = async (req, res) => {
-  const { name, category, images, rating, services, description, note } = req.body;
+  const {
+    name,
+    category,
+    images,
+    rating,
+    services,
+    description,
+    note,
+    adRole,
+  } = req.body;
 
   try {
     // extracting user id from request headers
     const user_id = req.user._id;
-    console.log(user_id)
-    const ad = await Ad.create({ name, category, images, rating, services, description, note, user_id });
+    const ad = await Ad.create({
+      name,
+      category,
+      images,
+      rating,
+      services,
+      description,
+      note,
+      adRole,
+      user_id,
+    });
     res.status(200).json(ad);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -68,7 +96,7 @@ const updateAd = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "No such ad" });
   }
-  
+
   const ad = await Ad.findOneAndUpdate(
     { _id: id },
     {
@@ -89,5 +117,5 @@ module.exports = {
   getAd,
   deleteAd,
   updateAd,
-  getMyAds
+  getMyAds,
 };

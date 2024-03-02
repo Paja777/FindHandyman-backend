@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 app.use(express.json());
 app.use((req, res, next) => {
-  console.log(req.path, req.method);
+  
   next();
 });
 
