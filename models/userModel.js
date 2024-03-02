@@ -20,16 +20,62 @@ const userSchema = new Schema({
   },
   category: {
     type: String,
-    required: false
+    required: false,
   },
   username: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
+  ratingArray: [{
+    payloadId: { type: String, required: true },
+    payload: { type: String, required: true }
+  }],
+  ratingNumber: {
+    type: String,
+    required: true,
+  },
 });
 
+// static method for user rating
+userSchema.statics.rating = async function (creatorId, payloadId, payload) {
+
+  if (creatorId === payloadId) {
+    throw Error("You cannot rate your services.");
+  }
+  // check if already rated
+  // const creator = await this.findOne({ creatorId });
+  // const exists = creator.ratingArray.find(
+  //   (rating) => rating.payloadId === payloadId
+  // );
+  // if (exists) {
+  //   throw Error("You already rated this user."); 
+  // }
+  // update ratingArray with payload and userId to keep track who rated
+  await this.updateOne(
+    { _id: creatorId },
+    { $push: { ratingArray: { [payloadId]: payload } } }
+  );
+  // get average rating number
+  const sum = ratingArray.reduce((acc, rating) => acc + rating.payload, 0);
+  const average = sum / ratingArray.length;
+  const averageString = average.toString();
+  // update rating property on user model with average rating number
+  const updatedRating = await this.updateOne(
+    { _id: userId },
+    { averageString }
+  );
+
+  return averageString;
+};
+
 // static signup method
-userSchema.statics.signup = async function (email, password, role, category, username) {
+userSchema.statics.signup = async function (
+  email,
+  password,
+  role,
+  category,
+  username
+) {
   if (!email || !password) {
     throw Error("All fields must be filled");
   }
@@ -50,7 +96,13 @@ userSchema.statics.signup = async function (email, password, role, category, use
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
 
-  const user = await this.create({ email, password: hash, role, category, username });
+  const user = await this.create({
+    email,
+    password: hash,
+    role,
+    category,
+    username,
+  });
 
   return user;
 };
@@ -61,19 +113,18 @@ userSchema.statics.login = async function (email, password) {
     throw Error("All fields must be filled");
   }
   const user = await this.findOne({ email });
-  console.log(user)
+  console.log(user);
 
   if (!user) {
     throw Error("Incorrect email");
   }
-  const match = await bcrypt.compare(password, user.password)
+  const match = await bcrypt.compare(password, user.password);
 
-  if(!match){
-    throw Error('Incorrect password')
+  if (!match) {
+    throw Error("Incorrect password");
   }
-  
-  return user
 
+  return user;
 };
 
 module.exports = mongoose.model("User", userSchema);

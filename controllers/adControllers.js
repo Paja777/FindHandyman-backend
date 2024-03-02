@@ -4,16 +4,16 @@ const mongoose = require("mongoose");
 // get all ads
 const getAds = async (req, res) => {
   const { searchTerm } = req.query;
-  console.log(searchTerm);
-  if (!searchTerm) {
+  
+  if (!searchTerm || searchTerm === '') {
     const ads = await Ad.find({}).sort({ cratedAt: -1 });
     res.status(200).json(ads);
     return;
   }
   const ads = await Ad.find({
-    category: { $regex: searchTerm, $options: "i" },
+    category: { $regex: `^${searchTerm}`, $options: "i" },
   }).sort({ createdAt: -1 });
-  console.log(ads);
+  
   res.status(200).json(ads);
 };
 

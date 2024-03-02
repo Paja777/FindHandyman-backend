@@ -10,7 +10,7 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // extract properties from db 
+    // extract properties from db
     const { role, category, username, _id } = await User.login(email, password);
     const token = createToken(_id);
 
@@ -33,5 +33,15 @@ const signupUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+const ratingUser = async (req, res) => {
+  const { creatorId, payload } = req.body;
+  const payloadId = req.user._id;
+  try {
+    const updatedRating = await User.rating(creatorId, payloadId, payload);
+    res.status(200).json({ updatedRating });
+  } catch (error) {
+    throw error;
+  }
+};
 
-module.exports = { loginUser, signupUser };
+module.exports = { loginUser, signupUser, ratingUser };

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require('../models/userModel')
+const User = require("../models/userModel");
 
 const requireAuth = async (req, res, next) => {
   // verify authentification
@@ -12,7 +12,6 @@ const requireAuth = async (req, res, next) => {
   try {
     const {_id} = jwt.verify(token, process.env.SECRET);
     console.log(_id);
-    
 
     // find user with id from token and select only id property
     req.user = await User.findOne({ _id }).select('_id')
