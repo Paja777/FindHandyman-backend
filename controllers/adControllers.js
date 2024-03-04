@@ -1,5 +1,6 @@
 const Ad = require("../models/adModel");
 const mongoose = require("mongoose");
+const User = require("../models/userModel");
 
 // get all ads
 const getAds = async (req, res) => {
@@ -55,11 +56,13 @@ const createAd = async (req, res) => {
   try {
     // extracting user id from request headers
     const user_id = req.user._id;
+    const creatorRating = await User.findOne({_id: user_id}).select("ratingNumber")
+    console.log(creatorRating.ratingNumber);
     const ad = await Ad.create({
       name,
       category,
       images,
-      rating,
+      rating: creatorRating.ratingNumber,
       services,
       description,
       note,

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+const { findOne } = require("./adModel");
 
 const Schema = mongoose.Schema;
 
@@ -26,46 +27,48 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  ratingArray: [{
-    payloadId: { type: String, required: true },
-    payload: { type: String, required: true }
-  }],
+  ratingArray: {
+    type: [{ type: Object }],
+    required: true 
+    },
   ratingNumber: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
 
 // static method for user rating
-userSchema.statics.rating = async function (creatorId, payloadId, payload) {
-
-  if (creatorId === payloadId) {
-    throw Error("You cannot rate your services.");
+userSchema.statics.rating = async function (creatorId, payloadUserId, payload) {
+  // check if rates own ad
+  if (creatorId === payloadUserId) {
+    throw Error("You cannot rate your own ad.");
   }
   // check if already rated
-  // const creator = await this.findOne({ creatorId });
-  // const exists = creator.ratingArray.find(
-  //   (rating) => rating.payloadId === payloadId
-  // );
-  // if (exists) {
-  //   throw Error("You already rated this user."); 
-  // }
+  const adCreator = await this.findOne({ _id: creatorId });
+  console.log( 'adCreator:', adCreator);
+  const exists = adCreator.ratingArray.find(
+    (rating) => rating.payloadId === payloadUserId
+  );
+  console.log(exists);
+
+  if (exists) {
+    throw Error("You already rated this user.");
+  }
   // update ratingArray with payload and userId to keep track who rated
-  await this.updateOne(
+  const updatedAdCreator = await this.findOneAndUpdate(
     { _id: creatorId },
-    { $push: { ratingArray: { [payloadId]: payload } } }
+    { $push: { ratingArray: { payloadId: payloadUserId, payload: payload } } }
   );
   // get average rating number
+  const { ratingArray } = updatedAdCreator;
   const sum = ratingArray.reduce((acc, rating) => acc + rating.payload, 0);
-  const average = sum / ratingArray.length;
-  const averageString = average.toString();
-  // update rating property on user model with average rating number
-  const updatedRating = await this.updateOne(
-    { _id: userId },
-    { averageString }
-  );
+  console.log(sum)
+  const average = sum / (ratingArray.length - 1);
 
-  return averageString;
+  // update rating property on user model with average rating number
+  await this.updateOne({ _id: creatorId }, { ratingNumber: average });
+
+  return average;
 };
 
 // static signup method
@@ -74,7 +77,9 @@ userSchema.statics.signup = async function (
   password,
   role,
   category,
-  username
+  username,
+  ratingArray,
+  ratingNumber
 ) {
   if (!email || !password) {
     throw Error("All fields must be filled");
@@ -102,6 +107,8 @@ userSchema.statics.signup = async function (
     role,
     category,
     username,
+    ratingArray,
+    ratingNumber,
   });
 
   return user;

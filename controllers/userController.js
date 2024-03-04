@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
+const Ad = require("../models/adModel");
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
@@ -22,10 +23,26 @@ const loginUser = async (req, res) => {
 
 // signup user
 const signupUser = async (req, res) => {
-  const { email, password, role, category, username } = req.body;
+  const {
+    email,
+    password,
+    role,
+    category,
+    username,
+    ratingArray,
+    ratingNumber,
+  } = req.body;
 
   try {
-    const user = await User.signup(email, password, role, category, username);
+    const user = await User.signup(
+      email,
+      password,
+      role,
+      category,
+      username,
+      ratingArray,
+      ratingNumber
+    );
     const token = createToken(user._id);
 
     res.status(200).json({ email, token, role, category, username });
@@ -35,12 +52,18 @@ const signupUser = async (req, res) => {
 };
 const ratingUser = async (req, res) => {
   const { creatorId, payload } = req.body;
-  const payloadId = req.user._id;
+  const payloadUserId = req.user._id.toString();
+  console.log("tu sam");
   try {
-    const updatedRating = await User.rating(creatorId, payloadId, payload);
+    // update creator rating and return updated rating number
+    const updatedRating = await User.rating(creatorId, payloadUserId, payload);
+    
+
+    // find all creator's ads and update rating on those
+    await Ad.updateMany({ user_id: creatorId }, { rating: updatedRating });
     res.status(200).json({ updatedRating });
   } catch (error) {
-    throw error;
+    res.status(400).json({ error: error.message });
   }
 };
 
