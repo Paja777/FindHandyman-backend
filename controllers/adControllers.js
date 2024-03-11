@@ -112,7 +112,7 @@ const updateAd = async (req, res) => {
   }
 
   res.status(200).json(ad);
-};
+}; 
 
 module.exports = {
   createAd,

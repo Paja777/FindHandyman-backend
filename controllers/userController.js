@@ -50,10 +50,10 @@ const signupUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 const ratingUser = async (req, res) => {
-  const { creatorId, payload } = req.body;
+  const { creatorId, payload } = req.body; 
   const payloadUserId = req.user._id.toString();
-  console.log("tu sam");
   try {
     // update creator rating and return updated rating number
     const updatedRating = await User.rating(creatorId, payloadUserId, payload);

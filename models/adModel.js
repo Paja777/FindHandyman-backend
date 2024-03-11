@@ -11,7 +11,7 @@ const adSchema = new Schema({
     name: {
         type: String,
         required: true
-    },
+    }, 
     images: {
         type: [String],
         required: false

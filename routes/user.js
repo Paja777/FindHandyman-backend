@@ -11,7 +11,7 @@ router.post('/login', loginUser)
 
 
 // signup route
-router.post('/signup', signupUser)
+router.post('/signup', signupUser) 
 
 //<-----Middleware for protecting routes---->//
 router.use(requireAuth)

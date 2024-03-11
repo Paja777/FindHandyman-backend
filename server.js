@@ -27,7 +27,7 @@ app.use(cors({
 app.use("/ad", adsRoutes);
 app.use("/user", userRoutes);
 
-mongoose
+mongoose 
   .connect(process.env.MONGO_URI, {
     dbName: 'FindHandyman',
     useNewUrlParser: true,
