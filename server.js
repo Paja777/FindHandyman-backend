@@ -30,8 +30,6 @@ app.use("/user", userRoutes);
 mongoose 
   .connect(process.env.MONGO_URI, {
     dbName: 'FindHandyman',
-    useNewUrlParser: true,
-    useUnifiedTopology: true
   })
   .then(() => {
     //listen for requests
