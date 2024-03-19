@@ -4,17 +4,19 @@ const User = require("../models/userModel");
 
 // get all ads
 const getAds = async (req, res) => {
-  const { searchTerm } = req.query;
-  
-  if (!searchTerm || searchTerm === '') {
-    const ads = await Ad.find({}).sort({ cratedAt: -1 });
+  const { searchTerm, displayedAds } = req.query;
+
+  if (!searchTerm || searchTerm === "") {
+    const ads = await Ad.find({
+      adRole: { $regex: displayedAds ?? '', $options: "i" },
+    }).sort({ cratedAt: -1 });
     res.status(200).json(ads);
     return;
   }
   const ads = await Ad.find({
     category: { $regex: `^${searchTerm}`, $options: "i" },
   }).sort({ createdAt: -1 });
-  
+
   res.status(200).json(ads);
 };
 
@@ -56,7 +58,9 @@ const createAd = async (req, res) => {
   try {
     // extracting user id from request headers
     const user_id = req.user._id;
-    const creatorRating = await User.findOne({_id: user_id}).select("ratingNumber")
+    const creatorRating = await User.findOne({ _id: user_id }).select(
+      "ratingNumber"
+    );
     console.log(creatorRating.ratingNumber);
     const ad = await Ad.create({
       name,
@@ -112,7 +116,7 @@ const updateAd = async (req, res) => {
   }
 
   res.status(200).json(ad);
-}; 
+};
 
 module.exports = {
   createAd,
