@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://find-handyman.onrender.com',
     credentials: true 
 }));
 
