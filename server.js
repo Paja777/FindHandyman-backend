@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 app.use(cors({
     origin: 'https://find-handyman.onrender.com/',
     credentials: true 
-    
+
 }));
 
 app.use("/ad", adsRoutes);
