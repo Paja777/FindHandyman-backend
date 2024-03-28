@@ -9,7 +9,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true, 
+    unique: true,
   },
   password: {
     type: String,
@@ -29,8 +29,8 @@ const userSchema = new Schema({
   },
   ratingArray: {
     type: [{ type: Object }],
-    required: true 
-    },
+    required: true,
+  },
   ratingNumber: {
     type: Number,
     required: true,
@@ -45,28 +45,32 @@ userSchema.statics.rating = async function (creatorId, payloadUserId, payload) {
   }
   // check if already rated
   const adCreator = await this.findOne({ _id: creatorId });
-  console.log( 'adCreator:', adCreator);
+  console.log("adCreator:", adCreator);
   const exists = adCreator.ratingArray.find(
     (rating) => rating.payloadId === payloadUserId
   );
-  console.log(exists);
+  console.log("exists:", exists);
 
   if (exists) {
     throw Error("You already rated this user.");
   }
-  // update ratingArray with payload and userId to keep track who rated
-  const updatedAdCreator = await this.findOneAndUpdate(
-    { _id: creatorId },
-    { $push: { ratingArray: { payloadId: payloadUserId, payload: payload } } }
-  );
+
   // get average rating number
-  const { ratingArray } = updatedAdCreator;
+  const { ratingArray } = adCreator;
+  ratingArray.push({ payloadId: payloadUserId, payload: payload });
+  console.log("ratingArray:", ratingArray);
   const sum = ratingArray.reduce((acc, rating) => acc + rating.payload, 0);
-  console.log(sum)
+  console.log("sum:", sum);
   const average = sum / (ratingArray.length - 1);
 
-  // update rating property on user model with average rating number
-  await this.updateOne({ _id: creatorId }, { ratingNumber: average });
+  // update rating property on user model
+  await this.updateOne(
+    { _id: creatorId },
+    {
+      $set: { ratingNumber: average },
+      $set: { ratingArray: ratingArray },
+    }
+  );
 
   return average;
 };
